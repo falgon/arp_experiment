@@ -12,14 +12,15 @@
 #include <srook/string/string_view.hpp>
 #include <srook/expected/expected.hpp>
 #include <iostream>
+#include <numeric>
 
 namespace arp_experimental {
 SROOK_INLINE_NAMESPACE(v1)
 
 class arp_packet {
 public:
-    arp_packet(srook::string_view interface, const char* target_ip)
-        : sock_(init_sock(::socket(AF_INET, SOCK_STREAM, 0))), target_ip_(target_ip)
+    arp_packet(srook::string_view interface)
+        : sock_(init_sock(::socket(AF_INET, SOCK_STREAM, 0)))
     {
         sock_ >>= [this, &interface](int sock) -> srook::expected<int, std::error_code> {
             ::ifreq ifr;
@@ -40,7 +41,7 @@ public:
         };
     }
 
-    bool send()
+    bool send(srook::string::string_view target_ip)
     {
         if (!outerr()) return false;
 
@@ -58,15 +59,17 @@ public:
             std::memset(&src, ifr_.value().ifr_hwaddr.sa_data[i] & 0xff, sizeof(::u_int8_t)); 
         });
 
+        // ref: RFC1700 Assigned Numbers
         pkt.ether_type = htons(0x0806); 
-        pkt.hw_type = htons(0x0001);
+        pkt.hw_type = htons(ARPHRD_ETHER);
         pkt.proto_type = htons(0x0800);
         pkt.hw_size = 0x06;
         pkt.proto_size = 0x04;
-        pkt.opcode = htons(0x0001);
+        pkt.opcode = htons(ARPOP_REQUEST);
         std::copy(srook::begin(pkt.src_mac), srook::end(pkt.src_mac), srook::begin(pkt.sender_mac));
+
         pkt.sender_ip = ::htonl(ipAddr);
-        pkt.target_ip = ::inet_addr(target_ip_.data());
+        pkt.target_ip = ::inet_addr(target_ip.data());
 
         if (::ioctl(sock_.value(), SIOCGIFINDEX, &ifr_.value(), sizeof(::ifreq)) < 0) 
             return registed_close(arp_fd, sock_.value());
@@ -140,7 +143,6 @@ private:
     srook::expected<int, std::error_code> sock_;
     srook::expected<::ifreq, std::error_code> ifr_;
     unsigned long int ipAddr;
-    srook::string::string_view target_ip_;
 };
 
 SROOK_INLINE_NAMESPACE_END

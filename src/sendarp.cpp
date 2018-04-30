@@ -16,6 +16,6 @@ int main(int argc, char *argv[])
 {
     if (!cmdarg_check(argc, argv[0])) return EXIT_FAILURE;
 
-    arp_experimental::arp_packet packet(argv[1], argv[2]);
-    packet.send();
+    arp_experimental::arp_packet packet(argv[1]);
+    packet.send(argv[2]);
 }

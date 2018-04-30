@@ -92,10 +92,9 @@ private:
 
     friend std::ostream& operator<<(std::ostream& os, const show_ether_header& this_)
     {
-        os << "ether_header -------------------------\n";
-        os << "\tether_dhost = " << this_.macaddr_n2a(this_.eh_.ether_dhost) << '\n';
-        os << "\tether_shost = " << this_.macaddr_n2a(this_.eh_.ether_shost) << '\n';
-        os << "\tether_type = " << std::hex << ntohs(this_.eh_.ether_type);
+        os << "\tdhost = " << this_.macaddr_n2a(this_.eh_.ether_dhost) << '\n';
+        os << "\tshost = " << this_.macaddr_n2a(this_.eh_.ether_shost) << '\n';
+        os << "\ttype = " << std::hex << ntohs(this_.eh_.ether_type);
         os << std::dec;
 
         switch (ntohs(this_.eh_.ether_type)) {
