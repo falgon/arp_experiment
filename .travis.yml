@@ -1,0 +1,20 @@
+language: cpp
+os:
+    - linux
+sudo: required
+dist: trusty
+script:
+    - g++-7 --version
+    - make
+    - make -f Makefile_bogus
+    - make clean
+compiler:
+    - gcc
+before_install:
+    - wget -q https://raw.githubusercontent.com/falgon/SrookCppLibraries/master/travis/linux/before_install.sh
+    - wget -q https://raw.githubusercontent.com/falgon/SrookCppLibraries/master/travis/linux/install.sh
+    - chmod +x before_install.sh
+    - ./before_install.sh
+    - chmod +x install.sh
+install:
+    - ./install.sh
