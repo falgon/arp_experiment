@@ -13,6 +13,7 @@
 #include <srook/type_traits/is_preincrementable.hpp>
 #include <srook/range/adaptor/transformed.hpp>
 #include <srook/algorithm/copy.hpp>
+#include <srook/process/perror.hpp>
 #include <algorithm>
 #include <sstream>
 #include <iomanip>
@@ -31,7 +32,7 @@ srook::optional<int> initialize_raw_socket(srook::string_view device, bool b) SR
     int soc = -1;
 
     if ((soc = ::socket(PF_PACKET, SOCK_RAW, htons(ETH_P_ARP))) < 0) {
-        ::perror("socket");
+        srook::process::perror("socket");
         return srook::nullopt;
     }
 
@@ -39,7 +40,7 @@ srook::optional<int> initialize_raw_socket(srook::string_view device, bool b) SR
     std::copy_n(device.cbegin(), srook::move(devsize), ifr.ifr_name);
 
     if (::ioctl(soc, SIOCGIFINDEX, &ifr) < 0) {
-        ::perror("ioctl");
+        srook::process::perror("ioctl");
         ::close(soc);
         return srook::nullopt;
     }
@@ -48,20 +49,20 @@ srook::optional<int> initialize_raw_socket(srook::string_view device, bool b) SR
 
     addr.sal.sll_ifindex = ifr.ifr_ifindex;
     if (::bind(soc, &addr.a, sizeof(addr.sal)) < 0) {
-        ::perror("bind");
+        srook::process::perror("bind");
         ::close(soc);
         return srook::nullopt;
     }
 
     if (b) {
         if (::ioctl(soc, SIOCGIFFLAGS, &ifr) < 0) {
-            ::perror("ioctl");
+            srook::process::perror("ioctl");
             ::close(soc);
             return srook::nullopt;
         }
         ifr.ifr_flags = ifr.ifr_flags | IFF_PROMISC;
         if (::ioctl(soc, SIOCSIFFLAGS, &ifr) < 0) {
-            ::perror("ioctl");
+            srook::process::perror("ioctl");
             ::close(soc);
             return srook::nullopt;
         }

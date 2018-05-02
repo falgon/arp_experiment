@@ -19,7 +19,7 @@ SROOK_INLINE_NAMESPACE(v1)
 
 class arp_packet {
 public:
-    arp_packet(srook::string_view interface)
+    arp_packet(srook::string_view interface) SROOK_NOEXCEPT_TRUE
         : sock_(init_sock(::socket(AF_INET, SOCK_STREAM, 0)))
     {
         sock_ >>= [this, &interface](int sock) -> srook::expected<int, std::error_code> {

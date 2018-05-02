@@ -14,7 +14,7 @@ int main(const int argc, const char** const argv)
         ::u_char buf[2048];
         for (int size = 0;;) {
             if ((size = ::read(soc, buf, sizeof(buf))) <= 0) {
-                ::perror("read");
+                srook::process::perror("read");
                 return {};
             } else {
                 if (static_cast<std::size_t>(size) >= sizeof(ether_header)) {
