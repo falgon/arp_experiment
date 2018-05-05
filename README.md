@@ -12,12 +12,12 @@ on the same network using ARP packet and broadcast mechanism.
 ## build & run
 ```sh
 $ make 
-$ ./dst/dump_arp <interface> # receive arp packet
-$ ./dst/sendarp <interface> <target ip> # sending arp packet (The destination MAC address is set to ff:ff:ff:ff:ff:ff.)
+$ sudo ./dst/dump_arp <interface> # receive arp packet
+$ sudo ./dst/sendarp <interface> <target ip> # sending arp packet (The destination MAC address is set to ff:ff:ff:ff:ff:ff.)
 
 $ make -f Makefile_bogus
-$ ./dst/dump_arp <interface> # receive arp packet
-$ ./dst/sendarp <interface> <target ip> # sending arp packet (The destination MAC address is set to ff:ff:ff:ff:ff:fe.)
+$ sudo ./dst/dump_arp <interface> # receive arp packet
+$ sudo ./dst/sendarp <interface> <target ip> # sending arp packet (The destination MAC address is set to ff:ff:ff:ff:ff:fe.)
 ```
 
 ## Related article(Japanese)
