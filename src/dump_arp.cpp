@@ -1,4 +1,5 @@
 #include <arp_experimental/arp_receive.hpp>
+#include <srook/cstring/memcpy.hpp>
 #include <iostream>
 
 int main(const int argc, const char** const argv)
@@ -12,13 +13,16 @@ int main(const int argc, const char** const argv)
 
     arp_experimental::initialize_raw_socket(argv[1], srook::move(b)) >>= [&](int soc) -> srook::optional<int> {
         ::u_char buf[2048];
+
         for (int size = 0;;) {
             if ((size = ::read(soc, buf, sizeof(buf))) <= 0) {
                 srook::process::perror("read");
                 return {};
             } else {
                 if (static_cast<std::size_t>(size) >= sizeof(ether_header)) {
-                    std::cout << arp_experimental::show_ether_header{*reinterpret_cast<::ether_header*>(buf)} << std::endl;
+                    ether_header eth;
+                    srook::cstring::memcpy(&eth, buf, sizeof(eth));
+                    std::cout << arp_experimental::show_ether_header{eth} << std::endl;
                 } else {
                     std::cerr << "read size(" << size << ") < " << sizeof(::ether_header) << std::endl;
                 }

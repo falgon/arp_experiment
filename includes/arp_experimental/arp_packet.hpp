@@ -11,6 +11,8 @@
 #include <srook/iterator/range_access.hpp>
 #include <srook/string/string_view.hpp>
 #include <srook/expected/expected.hpp>
+#include <srook/cstring/memcpy.hpp>
+#include <cstring>
 #include <iostream>
 #include <numeric>
 
@@ -30,7 +32,7 @@ public:
                 return {};
             }
             sockaddr_in sin;
-            std::memcpy(&sin, &ifr.ifr_addr, sizeof(sockaddr_in));
+            srook::cstring::memcpy(&sin, &ifr.ifr_addr, sizeof(sockaddr_in));
             ipAddr = ::ntohl(sin.sin_addr.s_addr);
             if (::ioctl(sock, SIOCGIFHWADDR, &ifr, sizeof(ifr)) < 0) {
                 registed_close(sock);
@@ -90,7 +92,7 @@ public:
         return true;
     }
 
-    SROOK_CONSTEXPR bool valid() const SROOK_NOEXCEPT_TRUE
+    SROOK_CXX17_CONSTEXPR bool valid() const SROOK_NOEXCEPT_TRUE
     {
         return sock_.valid() && ifr_.valid();
     }
@@ -123,7 +125,7 @@ private:
         }
         return true;
     }
-
+#include <srook/config/attribute/packed/begin.hpp>
     struct arp_st {
         // ether header
         ::uint8_t dst_mac[ETH_ALEN], src_mac[ETH_ALEN];
@@ -138,7 +140,8 @@ private:
         ::uint8_t target_mac[ETH_ALEN];
         srook::uint32_t target_ip;
         srook::uint8_t padding[18];
-    } __attribute__ ((packed));
+    } SROOK_PACKED;
+#include <srook/config/attribute/packed/end.hpp>
 
     srook::expected<int, std::error_code> sock_;
     srook::expected<::ifreq, std::error_code> ifr_;
