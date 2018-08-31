@@ -129,12 +129,12 @@ private:
     struct arp_st {
         // ether header
         ::uint8_t dst_mac[ETH_ALEN], src_mac[ETH_ALEN];
-        unsigned short int ether_type;
+        ::u_int16_t ether_type;
 
         // ARP header
-        unsigned short int hw_type, proto_type;
+        ::u_int16_t hw_type, proto_type;
         ::u_int8_t hw_size, proto_size;
-        unsigned short int opcode;
+        ::u_int16_t opcode;
         ::u_int8_t sender_mac[ETH_ALEN];
         srook::uint32_t sender_ip;
         ::uint8_t target_mac[ETH_ALEN];
