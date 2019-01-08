@@ -21,7 +21,7 @@ $ sudo ./dst/sendarp <interface> <target ip> # sending arp packet (The destinati
 ```
 
 ## Related article(Japanese)
-* [ARP パケットに対する挙動からネットワーク上の盗聴者を特定する](https://falgon.github.io/roki.log/posts/2018/%205/01/detectPromiscuous/)
+* [ARP パケットに対する挙動からネットワーク上の盗聴者を特定する](https://falgon.github.io/roki.log/posts/2018/%205月/01/detectPromiscuous/)
 
 ## License
 [MIT](./LICENSE)
